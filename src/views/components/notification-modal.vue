@@ -16,6 +16,26 @@
     >
       <a-form-item class="max-sm:mb-3">
         <template #label>
+          <span class="flex items-center gap-1">
+            发送选项
+            <a-tooltip
+              content="使用模板：按上方步骤自动填充信息；自定义短信：保留占位符或基于当前模板生成的内容并支持自由修改"
+            >
+              <icon-info-circle
+                class="text-[rgb(var(--primary-6))] cursor-pointer"
+              />
+            </a-tooltip>
+          </span>
+        </template>
+        <a-switch
+          v-model="isCustom"
+          :checked-text="'自定义短信'"
+          :unchecked-text="'使用模板'"
+        />
+      </a-form-item>
+
+      <a-form-item class="max-sm:mb-3">
+        <template #label>
           <span>{{ $t('candidate.receiver') }}</span>
           <span
             v-show="props.type === 'Reject'"
@@ -29,204 +49,101 @@
         />
       </a-form-item>
 
-      <div class="flex sm:gap-2 justify-between w-full max-sm:flex-col">
-        <a-form-item
-          class="max-sm:mb-3"
-          field="next"
-          :label="$t('common.user.nextStage')"
-          asterisk-position="end"
-          validate-trigger="change"
-        >
-          <a-select v-model:model-value="formData.next">
-            <a-option
-              v-for="item in nextValidSteps"
-              :key="item"
-              :value="item"
-              :title="$t(`common.steps.${item}`)"
-              >{{ $t(`common.steps.${item}`) }}</a-option
-            >
-          </a-select>
-        </a-form-item>
+      <template v-if="!isCustom">
+        <div class="flex sm:gap-2 justify-between w-full max-sm:flex-col">
+          <a-form-item
+            class="max-sm:mb-3"
+            field="next"
+            :label="$t('common.user.nextStage')"
+            asterisk-position="end"
+            validate-trigger="change"
+          >
+            <a-select v-model:model-value="formData.next">
+              <a-option
+                v-for="item in nextValidSteps"
+                :key="item"
+                :value="item"
+                :title="$t(`common.steps.${item}`)"
+                >{{ $t(`common.steps.${item}`) }}</a-option
+              >
+            </a-select>
+          </a-form-item>
 
-        <a-form-item
-          class="max-sm:mb-3"
-          field="time"
-          :disabled="!preview.notDisable.includes('time')"
-          :label="$t('common.time')"
-          asterisk-position="end"
-          validate-trigger="change"
-        >
-          <a-date-picker
-            v-model="formData.time"
-            show-time
-            format="YYYY-MM-DD HH:mm"
-            value-format="YYYY-MM-DD HH:mm:00"
-          />
-        </a-form-item>
+          <a-form-item
+            class="max-sm:mb-3"
+            field="time"
+            :disabled="!preview.notDisable.includes('time')"
+            :label="$t('common.time')"
+            asterisk-position="end"
+            validate-trigger="change"
+          >
+            <a-date-picker
+              v-model="formData.time"
+              show-time
+              format="YYYY-MM-DD HH:mm"
+              value-format="YYYY-MM-DD HH:mm:00"
+            />
+          </a-form-item>
 
-        <a-form-item
-          class="max-sm:mb-3"
-          field="meeting_id"
-          :disabled="!preview.notDisable.includes('meeting_id')"
-          :label="$t('common.sms.meetingId')"
-          asterisk-position="end"
-          validate-trigger="change"
-        >
-          <a-input v-model="formData.meeting_id" />
-        </a-form-item>
-      </div>
-      <div class="flex gap-2 justify-between w-full flex-col sm:flex-row">
-        <a-form-item
-          class="max-sm:mb-3"
-          field="place"
-          :disabled="!preview.notDisable.includes('place')"
-          :label="$t('common.sms.place')"
-          asterisk-position="end"
-          validate-trigger="change"
-        >
-          <a-input v-model="formData.place" />
-        </a-form-item>
-        <a-form-item
-          class="max-sm:mb-3"
-          field="rest"
-          :disabled="!preview.notDisable.includes('rest')"
-          :label="$t('common.sms.rest')"
-          asterisk-position="end"
-          validate-trigger="change"
-        >
-          <a-input v-model="formData.rest" />
-        </a-form-item>
-      </div>
-      <a-form-item class="max-sm:mb-3" :label="$t('common.sms.example')">
+          <a-form-item
+            class="max-sm:mb-3"
+            field="meeting_id"
+            :disabled="!preview.notDisable.includes('meeting_id')"
+            :label="$t('common.sms.meetingId')"
+            asterisk-position="end"
+            validate-trigger="change"
+          >
+            <a-input v-model="formData.meeting_id" />
+          </a-form-item>
+        </div>
+        <div class="flex gap-2 justify-between w-full flex-col sm:flex-row">
+          <a-form-item
+            class="max-sm:mb-3"
+            field="place"
+            :disabled="!preview.notDisable.includes('place')"
+            :label="$t('common.sms.place')"
+            asterisk-position="end"
+            validate-trigger="change"
+          >
+            <a-input v-model="formData.place" />
+          </a-form-item>
+          <a-form-item
+            class="max-sm:mb-3"
+            field="rest"
+            :disabled="!preview.notDisable.includes('rest')"
+            :label="$t('common.sms.rest')"
+            asterisk-position="end"
+            validate-trigger="change"
+          >
+            <a-input v-model="formData.rest" />
+          </a-form-item>
+        </div>
+      </template>
+      <a-form-item
+        class="max-sm:mb-3"
+        :label="isCustom ? '自定义短信内容' : $t('common.sms.example')"
+      >
         <a-scrollbar
-          class="flex flex-col w-full max-h-24 overflow-y-auto"
+          class="flex flex-col w-full max-h-48 overflow-y-auto"
           outer-class="w-full"
         >
-          <a-scrollbar
+          <div
             v-for="candidate in props.candidates"
             :key="candidate.aid"
-            class="rounded-md border-2 px-4 py-3 break-all overflow-y-auto max-h-20"
-            outer-class="w-full pb-4"
+            class="rounded-md border-2 px-4 py-3 pb-2 break-all mb-2 flex flex-col"
           >
-            <i18n-t :keypath="preview.i18nKey || ''" tag="div">
-              <template #name>
-                <span class="text-[rgb(var(--primary-6))]">{{
-                  candidate.name || '{ }'
-                }}</span>
-              </template>
-              <template #recruitment_name>
-                <span class="text-[rgb(var(--primary-6))]">{{
-                  $t(recNameI18nKey, {
-                    defaultValue: recNameI18nKey,
-                  })
-                }}</span>
-              </template>
-              <template #group>
-                <span class="text-[rgb(var(--primary-6))]">{{ group }}</span>
-              </template>
-              <template #current>
-                <span class="text-[rgb(var(--primary-6))]">{{
-                  curStep < recruitSteps.length &&
-                  $t(recruitSteps[props.curStep].i18Key)
-                }}</span>
-              </template>
-              <template #next>
-                <span class="text-[rgb(var(--primary-6))]">{{
-                  formData.next && $t(`common.steps.${formData.next}`)
-                }}</span>
-              </template>
-              <template #meeting_id>
-                <span class="text-[rgb(var(--primary-6))]">{{
-                  formData.meeting_id || '{ }'
-                }}</span>
-              </template>
-              <template #time>
-                <span class="text-[rgb(var(--primary-6))]">{{
-                  formData.time || '{ }'
-                }}</span>
-              </template>
-              <template #place>
-                <span class="text-[rgb(var(--primary-6))]">{{
-                  formData.place || '{ }'
-                }}</span>
-              </template>
-              <template #rest>
-                <span
-                  v-if="formData.rest"
-                  class="text-[rgb(var(--primary-6))]"
-                  >{{ formData.rest }}</span
-                >
-                <i18n-t
-                  v-else-if="props.type === 'Accept'"
-                  :keypath="preview.restI18nKey ?? ''"
-                  tag="span"
-                >
-                  <template #next>
-                    <span class="text-[rgb(var(--primary-6))]">{{
-                      formData.next && $t(`common.steps.${formData.next}`)
-                    }}</span>
-                  </template>
-                  <template #time>
-                    <span class="text-[rgb(var(--primary-6))]">{{
-                      formData.time || '{ }'
-                    }}</span>
-                  </template>
-                  <template #place>
-                    <span class="text-[rgb(var(--primary-6))]">{{
-                      formData.place || '{ }'
-                    }}</span>
-                  </template>
-                  <template #group>
-                    <span class="text-[rgb(var(--primary-6))]">{{
-                      group
-                    }}</span>
-                  </template>
-                </i18n-t>
-              </template>
-              <!-- 组面、群面无需传时间，其时间已在面试管理分配，example_time仅用于展示占位 -->
-              <template #example_time>
-                <!-- 3-(在线)组面 6-(在线)群面 -->
-                <span
-                  v-if="
-                    recruitSteps[3].value.includes(formData.next) &&
-                    candidate.groupInterviewTime
-                  "
-                  class="text-[rgb(var(--primary-6))]"
-                >
-                  {{
-                    dayjs(candidate.groupInterviewTime).format(
-                      'YYYY-MM-DD HH:mm:00',
-                    )
-                  }}
-                </span>
-                <span
-                  v-else-if="
-                    recruitSteps[6].value.includes(formData.next) &&
-                    candidate.teamInterviewTime
-                  "
-                  class="text-[rgb(var(--primary-6))]"
-                >
-                  {{
-                    dayjs(candidate.teamInterviewTime).format(
-                      'YYYY-MM-DD HH:mm:00',
-                    )
-                  }}
-                </span>
-                <span
-                  v-else
-                  class="cursor-pointer text-[rgb(var(--warning-4))] hover:text-[rgb(var(--warning-5))]"
-                  @click="
-                    $router.push('/interview/management');
-                    showNotify = false;
-                  "
-                  >{{ `\{${$t('common.status.waitForDistribution')}\}` }}</span
-                >
-              </template>
-              <template #online_interview_type>
-                {{ $t(`common.steps.${formData.next}`) }}
-              </template>
-            </i18n-t>
-          </a-scrollbar>
+            <div class="mb-2 font-bold text-gray-700 dark:text-gray-300">
+              {{ candidate.name }}
+            </div>
+            <a-textarea
+              v-if="isCustom"
+              v-model="customContents[candidate.aid]"
+              :auto-size="{ minRows: 2, maxRows: 6 }"
+            />
+            <div v-else class="text-sm">
+              {{ generateSMSContent(candidate) }}
+            </div>
+          </div>
         </a-scrollbar>
       </a-form-item>
     </a-form>
@@ -280,6 +197,17 @@ const recStore = useRecruitmentStore();
 const recName = computed(() => recStore.currentRec?.name ?? '');
 
 const recNameI18nKey = computed(() => getRecruitmentName(t, recName.value));
+
+const isCustom = ref(false);
+const customContents = ref<Record<string, string>>({});
+
+watch(isCustom, (val) => {
+  if (val) {
+    props.candidates.forEach((candidate) => {
+      customContents.value[candidate.aid] = generateSMSContent(candidate);
+    });
+  }
+});
 
 const showNotify = defineModel<boolean>('showNotify', {
   type: Boolean,
@@ -339,39 +267,92 @@ watch(
   },
 );
 
-const handleNotify = async () => {
-  const validateError = await notifyFormRef.value?.validate();
-  if (validateError) return false;
+const generateSMSContent = (candidate: any) => {
+  let example_time = `{${t('common.status.waitForDistribution')}}`;
   if (
     recruitSteps[3].value.includes(formData.value.next) &&
-    !props.candidates.every(({ groupInterviewTime }) => groupInterviewTime)
+    candidate.groupInterviewTime
   ) {
-    Message.error(t('candidate.requireAllocateTime'));
-    return false;
-  }
-  if (
+    example_time = dayjs(candidate.groupInterviewTime).format(
+      'YYYY-MM-DD HH:mm:00',
+    );
+  } else if (
     recruitSteps[6].value.includes(formData.value.next) &&
-    !props.candidates.every(({ teamInterviewTime }) => teamInterviewTime)
+    candidate.teamInterviewTime
   ) {
-    Message.error(t('candidate.requireAllocateTime'));
-    return false;
+    example_time = dayjs(candidate.teamInterviewTime).format(
+      'YYYY-MM-DD HH:mm:00',
+    );
   }
 
-  const res = groupBy(props.candidates, ({ step }) => step);
-  const reqs = Object.entries(res).map(([current, arr]) => {
-    const aids = arr.map(({ aid }) => aid);
+  let restMsg = formData.value.rest;
+  if (!restMsg && props.type === 'Accept' && preview.value.restI18nKey) {
+    restMsg = t(preview.value.restI18nKey, {
+      next: formData.value.next ? t(`common.steps.${formData.value.next}`) : '',
+      time: formData.value.time || '{ }',
+      place: formData.value.place || '{ }',
+      group: props.group,
+    });
+  }
+
+  return t(preview.value.i18nKey || '', {
+    name: candidate.name || '{ }',
+    recruitment_name: t(recNameI18nKey.value, {
+      defaultValue: recNameI18nKey.value,
+    }),
+    group: props.group,
+    current:
+      props.curStep < recruitSteps.length
+        ? t(recruitSteps[props.curStep].i18Key)
+        : '',
+    next: formData.value.next ? t(`common.steps.${formData.value.next}`) : '',
+    meeting_id: formData.value.meeting_id || '{ }',
+    time: formData.value.time || '{ }',
+    place: formData.value.place || '{ }',
+    rest: restMsg || '',
+    example_time,
+    online_interview_type: formData.value.next
+      ? t(`common.steps.${formData.value.next}`)
+      : '',
+  });
+};
+
+const handleNotify = async () => {
+  if (!isCustom.value) {
+    const validateError = await notifyFormRef.value?.validate();
+    if (validateError) return false;
+    if (
+      recruitSteps[3].value.includes(formData.value.next) &&
+      !props.candidates.every(({ groupInterviewTime }) => groupInterviewTime)
+    ) {
+      Message.error(t('candidate.requireAllocateTime'));
+      return false;
+    }
+    if (
+      recruitSteps[6].value.includes(formData.value.next) &&
+      !props.candidates.every(({ teamInterviewTime }) => teamInterviewTime)
+    ) {
+      Message.error(t('candidate.requireAllocateTime'));
+      return false;
+    }
+  }
+
+  const reqs = props.candidates.map((candidate) => {
+    const content = isCustom.value
+      ? customContents.value[candidate.aid]
+      : generateSMSContent(candidate);
     return sendSms({
-      type: props.type,
-      current: current as Step,
-      ...formData.value,
-      aids,
+      aid: candidate.aid,
+      content,
     });
   });
+
   const resp = await Promise.all(reqs);
   if (!resp.every((x) => x)) return false;
   Message.success(t('common.result.sendSuccess'));
   notifyFormRef.value?.resetFields();
   [formData.value.next] = nextValidSteps.value;
+  isCustom.value = false;
   return true;
 };
 </script>
