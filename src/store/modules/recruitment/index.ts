@@ -6,11 +6,14 @@ import {
   createRecruitment,
   updateRecruitment,
   uploadTest,
+  uploadTestUrl,
   SetStressTestTime,
   getTest,
   deleteInterview,
   createInterview,
 } from '@/api';
+import { set } from 'lodash';
+import { getWrittenTestType, setWrittenTestType } from '@/api/recruitment';
 import {
   RecruitmentState,
   UpdateParams,
@@ -66,7 +69,14 @@ const useRecruitmentStore = defineStore('recruitment', {
       }
       this.getAllRecruitments();
     },
-    async uploadTest(rid: string, group: Group, data: File) {
+    async uploadTest(rid: string, group: Group, data: File | string) {
+      if (typeof data === 'string') {
+        await setWrittenTestType(rid, group, 2);
+        console.log('上传测试链接', await getWrittenTestType(rid, group));
+        const res = await uploadTestUrl(rid, group, data);
+        return res;
+      }
+      await setWrittenTestType(rid, group, 1);
       const res = await uploadTest(rid, group, data);
       return res;
     },

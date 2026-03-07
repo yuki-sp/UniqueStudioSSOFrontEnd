@@ -103,6 +103,16 @@
         </a-select>
       </a-form-item>
       <a-form-item field="data">
+        <!-- 使用 label 插槽自定义标题 -->
+        <template #label>
+          {{ $t('common.operation.uploadFile') }}
+          <a-tooltip :content="$t('common.operation.uploadFileOrUrl')">
+            <icon-info-circle
+              style="margin-left: 4px; color: var(--color-text-3); cursor: help"
+            />
+          </a-tooltip>
+        </template>
+
         <a-upload
           v-model:file-list="uploadData.data"
           draggable
@@ -111,12 +121,18 @@
           :limit="1"
         >
           <template #upload-button>
-            <a-button class="w-full"
-              >{{ $t('common.operation.uploadFile') }}
-              <template #icon><icon-upload /> </template>
+            <a-button class="w-full">
+              <template #icon><icon-upload /></template>
+              {{ $t('common.operation.uploadFile') }}
             </a-button>
           </template>
         </a-upload>
+      </a-form-item>
+      <a-form-item field="url" :label="$t('common.operation.uploadUrl')">
+        <a-input
+          v-model="uploadData.url"
+          placeholder="https://example.com/test.pdf"
+        />
       </a-form-item>
     </a-form>
   </a-modal>
@@ -153,7 +169,7 @@ import { debounce } from 'lodash';
 import { Group, Step, recruitSteps } from '@/constants/team';
 import useRecruitmentStore from '@/store/modules/recruitment';
 import TeamGroupRadio from '@/views/components/team-group-radio.vue';
-import { FileItem, Message } from '@arco-design/web-vue';
+import { FileItem, Message, Tooltip } from '@arco-design/web-vue';
 import { useI18n } from 'vue-i18n';
 import useWindowResize from '@/hooks/resize';
 import candidateInfoCard from './candidate-info-card.vue';
@@ -322,22 +338,27 @@ const handleClearSelected = () => {
 
 watch([curStep, currentGroup, recStore], handleClearSelected);
 
-const uploadData = ref<{ group: Ref<Group>; data: FileItem[] }>({
+const uploadData = ref<{ group: Ref<Group>; data: FileItem[]; url: string }>({
   group: currentGroup,
   data: [],
+  url: '',
 });
 
 const showUploadModal = ref(false);
 
 const handleUpload = async (): Promise<boolean> => {
-  if (!uploadData.value.data[0]?.file) {
-    Message.warning(t('common.operation.uploadFileFirst'));
+  if (!uploadData.value.data[0]?.file && !uploadData.value.url) {
+    Message.warning(t('common.operation.uploadFileOrUrlFirst'));
+    return false;
+  }
+  if (uploadData.value.data[0]?.file && uploadData.value.url) {
+    Message.warning(t('common.operation.uploadFileOrUrlOnly'));
     return false;
   }
   const res = await recStore.uploadTest(
     recStore.currentRid,
     uploadData.value.group,
-    uploadData.value.data[0].file,
+    uploadData.value.data[0]?.file || uploadData.value.url,
   );
   if (!res) return false;
   Message.success(t('common.result.uploadFileSuccess'));
@@ -371,6 +392,10 @@ const handleSetStressTime = async (): Promise<boolean> => {
   Message.success(t('common.result.setStressTestTimeSuccess'));
   return true;
 };
+
+// 预览链接
+const preUrl =
+  'blob:http://localhost:5111/33cb0d31-e85c-4d11-90df-70328f58f268';
 </script>
 
 <style scoped lang="less">

@@ -16,3 +16,11 @@ export type SetStressTestTimeResponse = HttpRes<object>;
 export type UploadTestRequest = File;
 
 export type UploadTestResponse = HttpRes<object>;
+
+export type UploadTestUrlResponse = HttpRes<object>;
+
+export type SetWrittenTestTypeResponse = HttpRes<object>;
+
+export type GetWrittenTestTypeResponse = HttpRes<{
+  group_written_test_type: number;
+}>;
