@@ -157,4 +157,11 @@ export default {
     '报名开始时间必须等于招新开始时间',
   'common.createRec.signupEndTimeBeforeRecEndTime':
     '报名结束时间必须早于招新结束时间',
+
+  'common.interview.duration':
+    '面试时长 (分钟)',
+  'common.interview.rest':
+    '休息时长 (分钟)',
+  'common.interview.error.incompleteInfo':
+    '日期或时间未填写完整',
 };

@@ -80,6 +80,26 @@
         </a-form-item>
       </a-form>
     </div>
+    <template #footer>
+      <div class="flex justify-end gap-2">
+        <a-button @click="showSwitchStage = false">
+          {{ $t('common.operation.cancel') }}
+        </a-button>
+        <a-button type="primary" @click="handleSwitchStage">
+          {{ $t('common.operation.confirm') }}
+        </a-button>
+        <a-button
+          type="outline"
+          class="max-sm:hidden"
+          :size="buttonSize"
+          :disabled="props.curStep >= recruitSteps.length || !candidates.length"
+          @click="openNotify"
+        >
+          <template #icon> <icon-plus /> </template>
+          {{ $t('common.operation.sendNotification') }}
+        </a-button>
+      </div>
+    </template>
   </a-modal>
   <a-modal
     v-model:visible="showTerminate"
