@@ -11,6 +11,7 @@ export {
   createRecruitment,
   updateRecruitment,
   uploadTest,
+  uploadTestUrl,
   SetStressTestTime,
   getTest,
 } from './recruitment';

@@ -84,6 +84,26 @@
         </a-form-item>
       </a-form>
     </div>
+    <template #footer>
+      <div class="flex justify-end gap-2">
+        <a-button @click="showSwitchStage = false">
+          {{ $t('common.operation.cancel') }}
+        </a-button>
+        <a-button type="primary" @click="handleConfirm">
+          {{ $t('common.operation.confirm') }}
+        </a-button>
+        <a-button
+          type="outline"
+          class="max-sm:hidden"
+          :size="buttonSize"
+          :disabled="props.curStep >= recruitSteps.length || !candidates.length"
+          @click="openNotify"
+        >
+          <template #icon> <icon-plus /> </template>
+          {{ $t('common.operation.sendNotification') }}
+        </a-button>
+      </div>
+    </template>
   </a-modal>
   <a-modal
     v-model:visible="showTerminate"
@@ -241,6 +261,13 @@ const handleSwitchStage = async () => {
       Message.success(t('common.result.switchStageSuccess'));
     props.onDone?.();
     recStore.refresh();
+  }
+};
+
+const handleConfirm = async () => {
+  const isSuccess = await handleSwitchStage();
+  if (isSuccess) {
+    showSwitchStage.value = false;
   }
 };
 

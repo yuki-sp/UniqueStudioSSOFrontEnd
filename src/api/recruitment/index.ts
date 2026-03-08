@@ -15,6 +15,9 @@ import {
   UpdateRecruitmentResponse,
   UploadTestRequest,
   UploadTestResponse,
+  UploadTestUrlResponse,
+  SetWrittenTestTypeResponse,
+  GetWrittenTestTypeResponse,
 } from '@/constants/httpMsg/recruitment/updateRecruitmentMsg';
 import { Group, Step } from '@/constants/team';
 import request from '../_request';
@@ -82,6 +85,43 @@ export async function uploadTest(
     headers: {
       'Content-Type': 'multipart/form-data',
     },
+  });
+  return res;
+}
+
+export async function uploadTestUrl(
+  rid: string,
+  group: Group,
+  url: string,
+): Promise<UploadTestUrlResponse> {
+  const res: UploadTestUrlResponse = await request({
+    url: `/recruitments/${rid}/written-test-url/${group}`, // 注意末尾的斜杠，后端写的
+    method: 'PUT',
+    data: { questionnaire_url: url },
+  });
+  return res;
+}
+
+export async function setWrittenTestType(
+  rid: string,
+  group: Group,
+  type: number,
+): Promise<SetWrittenTestTypeResponse> {
+  const res: SetWrittenTestTypeResponse = await request({
+    url: `/recruitments/${rid}/written-test-type/${group}`,
+    method: 'POST',
+    data: { group_written_test_type: type },
+  });
+  return res;
+}
+
+export async function getWrittenTestType(
+  rid: string,
+  group: Group,
+): Promise<GetWrittenTestTypeResponse> {
+  const res: GetWrittenTestTypeResponse = await request({
+    url: `/recruitments/${rid}/written-test-type/${group}`,
+    method: 'GET',
   });
   return res;
 }

@@ -26,22 +26,63 @@
         </a-select>
       </div>
 
-      <div class="flex justify-between mb-2 sm:flex-row flex-col">
-        <div class="sm:w-1/2 w-4/5 sm:mb-0 mb-4">
+      <div class="flex gap-4 mb-6">
+        <div class="flex-1">
+          <div class="font-semibold mb-2">
+            {{ $t('common.interview.duration') }}
+          </div>
+          <a-input-number v-model="duration" :min="1" />
+        </div>
+        <div class="flex-1">
+          <div class="font-semibold mb-2">
+            {{ $t('common.interview.rest') }}
+          </div>
+          <a-input-number v-model="rest" :min="0" />
+        </div>
+      </div>
+
+      <div class="flex gap-4">
+        <div class="w-5/12">
           <div class="font-semibold mb-2">
             {{ $t('common.date') }}<span class="text-blue-600">*</span>
           </div>
-          <a-date-picker v-model="interviewDate" class="w-5/6" />
+          <a-date-picker v-model="interviewDate" class="w-full" />
         </div>
-        <div class="sm:w-1/2 w-4/5 pr-2">
+
+        <div class="flex-1">
           <div class="font-semibold mb-2">
             {{ $t('common.time') }}<span class="text-blue-600">*</span>
           </div>
-          <a-time-picker
-            v-model="interviewTime"
-            type="time-range"
-            class="w-full"
-          />
+          <div
+            v-for="(_, index) in interviewTimes"
+            :key="index"
+            class="flex items-center mb-2 gap-2"
+          >
+            <a-time-picker
+              v-model="interviewTimes[index]"
+              type="time-range"
+              format="HH:mm"
+              class="flex-1"
+            />
+            <a-button
+              type="text"
+              status="danger"
+              class="px-1"
+              @click="removeTimeRange(index)"
+            >
+              <template #icon><icon-delete /></template>
+            </a-button>
+            <a-button
+              v-if="index === interviewTimes.length - 1"
+              type="text"
+              class="px-1"
+              @click="addTimeRange"
+            >
+              <template #icon><icon-plus /></template>
+            </a-button>
+            <!-- 占位，保证对齐 -->
+            <div v-else class="w-8"></div>
+          </div>
         </div>
       </div>
     </div>
@@ -54,6 +95,7 @@ import { Group, Period, PeriodDefineHour } from '@/constants/team';
 import useRecruitmentStore from '@/store/modules/recruitment';
 import { Message } from '@arco-design/web-vue';
 import { useI18n } from 'vue-i18n';
+import { IconPlus, IconDelete } from '@arco-design/web-vue/es/icon';
 
 const { t } = useI18n();
 
@@ -72,8 +114,39 @@ const props = defineProps({
 
 const currentGroup = ref<Group>(props.currentGroupStart);
 const interviewDate = ref<string>('');
-const interviewTime = ref<string[]>([]);
+const interviewTimes = ref<string[][]>([[]]);
+const duration = ref(30);
+const rest = ref(10);
 const recStore = useRecruitmentStore();
+
+const addTimeRange = () => {
+  const lastRange = interviewTimes.value[interviewTimes.value.length - 1];
+  if (lastRange && lastRange[1]) {
+    const [h, m, s] = lastRange[1].split(':').map(Number);
+    const date = new Date();
+    date.setHours(h, m, s || 0);
+
+    const nextStart = new Date(date.getTime() + rest.value * 60000);
+    const nextEnd = new Date(nextStart.getTime() + duration.value * 60000);
+
+    const format = (d: Date) =>
+      `${String(d.getHours()).padStart(2, '0')}:${String(
+        d.getMinutes(),
+      ).padStart(2, '0')}`;
+
+    interviewTimes.value.push([format(nextStart), format(nextEnd)]);
+  } else {
+    interviewTimes.value.push([]);
+  }
+};
+
+const removeTimeRange = (index: number) => {
+  if (interviewTimes.value.length > 1) {
+    interviewTimes.value.splice(index, 1);
+  } else {
+    interviewTimes.value = [[]];
+  }
+};
 
 const groupOptions = Object.entries(Group).map(([label, value]) => ({
   label,
@@ -93,22 +166,28 @@ const calcPeriod = (time: Date): Period => {
 };
 
 const handleCreate = async () => {
-  const [startTime, endTime] = interviewTime.value;
+  if (
+    !interviewDate.value ||
+    interviewTimes.value.some((time) => time.length < 2)
+  ) {
+    Message.warning(t('common.interview.error.incompleteInfo'));
+    return;
+  }
 
-  // 创建日期和时间的ISO格式
-  const startDate = new Date(`${interviewDate.value}T${startTime}`);
-  const start = startDate.toISOString();
-  const end = new Date(`${interviewDate.value}T${endTime}`).toISOString();
-
-  visible.value = false;
-  const res = await recStore.createInterview(currentGroup.value, [
-    {
+  const interviews = interviewTimes.value.map(([startTime, endTime]) => {
+    const startDate = new Date(`${interviewDate.value}T${startTime}`);
+    const start = startDate.toISOString();
+    const end = new Date(`${interviewDate.value}T${endTime}`).toISOString();
+    return {
       date: new Date(interviewDate.value).toISOString(),
       period: calcPeriod(startDate),
       start,
       end,
-    },
-  ]);
+    };
+  });
+
+  visible.value = false;
+  const res = await recStore.createInterview(currentGroup.value, interviews);
   if (res) {
     recStore.refresh();
     Message.success(t('common.result.addInterviewSuccess'));

@@ -19,8 +19,11 @@ export default {
   'common.operation.comfirmDeleteDate': '确认删除该日程？',
   'common.operation.returnInterviewManagement': '返回面试管理',
   'common.operation.uploadTest': '上传笔试/问卷',
+  'common.operation.uploadFileOrUrl': '可上传文件或在线问卷链接（二选一）',
   'common.operation.uploadFile': '上传文件',
-  'common.operation.uploadFileFirst': '请先上传文件',
+  'common.operation.uploadUrl': '上传链接',
+  'common.operation.uploadFileOrUrlFirst': '请先上传文件或链接',
+  'common.operation.uploadFileOrUrlOnly': '请勿同时上传文件和链接',
   'common.operation.setStressTestTime': '设置熬测时间',
   'common.operation.sendNotification': '发送通知',
   'common.operation.notify': '通知',
@@ -30,6 +33,7 @@ export default {
   'common.operation.confirmRevive': '确认复活投递？',
   'common.operation.confirmDeleteComment': '确认删除该评论？',
   'common.operation.editContent': '编辑内容',
+  'common.operation.currentTestFileOrUrl': '当前笔试文件/链接',
   'common.operation.searchByName': '搜索成员姓名',
   'common.operation.operate': '操作',
   'common.operation.refresh': '刷新',
@@ -51,7 +55,7 @@ export default {
   'common.result.terminateSuccess': '终止投递成功',
   'common.result.reviveTodo': '复活投递功能待实现',
   'common.result.commentNotNull': '评论与评价不能同时为空',
-  'common.result.uploadFileSuccess': '上传文件成功',
+  'common.result.uploadFileSuccess': '上传文件/链接成功',
   'common.result.setStressTestTimeSuccess': '设置熬测时间成功',
   'common.result.remainingSchedules': '剩余{count}个日程',
   'common.result.allowcateTimeSuccess': '分配时间成功',
@@ -156,4 +160,11 @@ export default {
     '报名开始时间必须等于招新开始时间',
   'common.createRec.signupEndTimeBeforeRecEndTime':
     '报名结束时间必须早于招新结束时间',
+
+  'common.interview.duration':
+    '面试时长 (分钟)',
+  'common.interview.rest':
+    '休息时长 (分钟)',
+  'common.interview.error.incompleteInfo':
+    '日期或时间未填写完整',
 };
