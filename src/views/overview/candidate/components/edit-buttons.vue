@@ -2,7 +2,7 @@
   <div class="flex justify-end gap-2 items-center">
     <a-button
       type="primary"
-      :disabled="props.curStep >= recruitSteps.length - 1 || !candidates.length"
+      :disabled="props.curStep >= recruitSteps.length || !candidates.length"
       :size="buttonSize"
       class="max-sm:rounded-full rounded-none"
       @click="openSwitchStage"
@@ -85,7 +85,7 @@
         <a-button @click="showSwitchStage = false">
           {{ $t('common.operation.cancel') }}
         </a-button>
-        <a-button type="primary" @click="handleSwitchStage">
+        <a-button type="primary" @click="handleConfirm">
           {{ $t('common.operation.confirm') }}
         </a-button>
         <a-button
@@ -224,6 +224,13 @@ const handleSwitchStage = async () => {
       Message.success(t('common.result.switchStageSuccess'));
     props.onDone?.();
     recStore.refresh();
+  }
+};
+
+const handleConfirm = async () => {
+  const isSuccess = await handleSwitchStage();
+  if (isSuccess) {
+    showSwitchStage.value = false;
   }
 };
 
