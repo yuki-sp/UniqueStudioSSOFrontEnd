@@ -17,7 +17,7 @@
 
 <script setup lang="ts">
 import NoPermissionSVG from '@/assets/svg/no-permission.svg';
-import { SSO_DOMAIN, HR_DOMAIN_FE, HR_BASE_URL } from '@/constants';
+import { SSO_DOMAIN, HR_DOMAIN_FE } from '@/constants';
 
 function handleRelogin() {
   window.location.href = `//${SSO_DOMAIN}/login?from=${HR_DOMAIN_FE}`;
