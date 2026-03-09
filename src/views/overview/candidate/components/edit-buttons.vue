@@ -2,7 +2,7 @@
   <div class="flex justify-end gap-2 items-center">
     <a-button
       type="primary"
-      :disabled="props.curStep >= recruitSteps.length - 1 || !candidates.length"
+      :disabled="props.curStep >= recruitSteps.length || !candidates.length"
       :size="buttonSize"
       class="max-sm:rounded-full rounded-none"
       @click="openSwitchStage"
@@ -153,6 +153,7 @@ const props = defineProps({
   },
   onDone: {
     type: Function,
+    default: () => {},
   },
 });
 
@@ -197,7 +198,7 @@ const handleSwitchStage = async () => {
       ),
     );
     return true;
-  } catch (err) {
+  } catch {
     return false;
   } finally {
     if (res?.every((x) => x))
@@ -222,7 +223,7 @@ const handleTerminate = async () => {
       props.candidates.map(({ aid }) => rejectApplication(aid)),
     );
     return true;
-  } catch (err) {
+  } catch {
     return false;
   } finally {
     if (res?.every((x) => x))

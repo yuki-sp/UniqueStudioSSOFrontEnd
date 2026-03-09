@@ -154,7 +154,6 @@
 import { ref, PropType, watch, computed } from 'vue';
 import { Group, recruitSteps, Step, SMSTemplate } from '@/constants/team';
 import { sendSms } from '@/api';
-import { groupBy } from 'lodash';
 import { Message } from '@arco-design/web-vue';
 import { useI18n } from 'vue-i18n';
 import dayjs from 'dayjs';
@@ -200,14 +199,6 @@ const recNameI18nKey = computed(() => getRecruitmentName(t, recName.value));
 
 const isCustom = ref(false);
 const customContents = ref<Record<string, string>>({});
-
-watch(isCustom, (val) => {
-  if (val) {
-    props.candidates.forEach((candidate) => {
-      customContents.value[candidate.aid] = generateSMSContent(candidate);
-    });
-  }
-});
 
 const showNotify = defineModel<boolean>('showNotify', {
   type: Boolean,
@@ -317,6 +308,14 @@ const generateSMSContent = (candidate: any) => {
   });
 };
 
+watch(isCustom, (val) => {
+  if (val) {
+    props.candidates.forEach((candidate) => {
+      customContents.value[candidate.aid] = generateSMSContent(candidate);
+    });
+  }
+});
+
 const handleNotify = async () => {
   if (!isCustom.value) {
     const validateError = await notifyFormRef.value?.validate();
@@ -337,23 +336,27 @@ const handleNotify = async () => {
     }
   }
 
-  const reqs = props.candidates.map((candidate) => {
-    const content = isCustom.value
-      ? customContents.value[candidate.aid]
-      : generateSMSContent(candidate);
-    return sendSms({
-      aid: candidate.aid,
-      content,
-    });
-  });
-
-  const resp = await Promise.all(reqs);
-  if (!resp.every((x) => x)) return false;
-  Message.success(t('common.result.sendSuccess'));
-  notifyFormRef.value?.resetFields();
-  [formData.value.next] = nextValidSteps.value;
-  isCustom.value = false;
-  return true;
+  try {
+    const resp = await Promise.all(
+      props.candidates.map((candidate) => {
+        const content = isCustom.value
+          ? customContents.value[candidate.aid]
+          : generateSMSContent(candidate);
+        return sendSms({
+          aid: candidate.aid,
+          content,
+        });
+      }),
+    );
+    if (!resp.every((x) => x)) return false;
+    Message.success(t('common.result.sendSuccess'));
+    notifyFormRef.value?.resetFields();
+    [formData.value.next] = nextValidSteps.value;
+    isCustom.value = false;
+    return true;
+  } catch {
+    return false;
+  }
 };
 </script>
 
