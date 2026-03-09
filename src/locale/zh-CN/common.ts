@@ -49,6 +49,7 @@ export default {
   'common.result.sendSuccess': '发送成功',
   'common.result.switchStageSuccess': '转移阶段成功',
   'common.result.terminateSuccess': '终止投递成功',
+  'common.result.reviveSuccess': '复活投递成功',
   'common.result.reviveTodo': '复活投递功能待实现',
   'common.result.commentNotNull': '评论与评价不能同时为空',
   'common.result.uploadFileSuccess': '上传文件成功',

@@ -270,8 +270,19 @@ const handleTerminate = async () => {
 };
 
 const handleRevive = async () => {
-  Message.info(t('common.result.reviveTodo'));
-  return true;
+  let res;
+  try {
+    res = await Promise.all(
+      props.candidates.map(({ aid }) => rejectApplication(aid)),
+    );
+    return true;
+  } catch (err) {
+    return false;
+  } finally {
+    if (res?.every((x) => x)) Message.success(t('common.result.reviveSuccess'));
+    props.onDone?.();
+    recStore.refresh();
+  }
 };
 
 const openNotify = () => {
