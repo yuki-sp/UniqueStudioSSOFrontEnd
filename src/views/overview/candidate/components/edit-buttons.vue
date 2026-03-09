@@ -10,13 +10,13 @@
       {{ $t('common.operation.switchStage') }}
     </a-button>
     <a-button
-      status="danger"
-      :disabled="props.curStep >= recruitSteps.length || !candidates.length"
+      :status="props.curStep === recruitSteps.length? 'success' : 'danger'"
+      :disabled="!candidates.length"
       :size="buttonSize"
       class="max-sm:rounded-full rounded-none"
       @click="openTerminate"
     >
-      {{ $t('common.operation.terminate') }}
+      {{ props.curStep === recruitSteps.length? '复活投递' : '终止投递'}}
     </a-button>
     <a-button
       type="outline"
@@ -235,10 +235,10 @@ const handleConfirm = async () => {
 };
 
 const openTerminate = () => {
-  if (!allAccepted.value) {
-    Message.error(t('candidate.noAbandonedRejected'));
-    return;
-  }
+  // if (!allAccepted.value) {
+  //   Message.error(t('candidate.noAbandonedRejected'));
+  //   return;
+  // }这里注释掉用于复活投递的测试
   showTerminate.value = true;
 };
 
