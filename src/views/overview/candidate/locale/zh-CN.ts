@@ -1,5 +1,6 @@
 export default {
   'candidate.terminate': '此操作将终止 {num} 位选手进行后续投递。',
+  'candidate.revive': '此操作将复活 {num} 位选手进行后续投递。',
   'candidate.warnNotify':
     '转移阶段前需先通知选手，转移后将不能发送当前阶段的通知！',
   'candidate.switchStage': '由 {cur} 阶段转移至',

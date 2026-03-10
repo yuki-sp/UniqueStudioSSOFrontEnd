@@ -72,6 +72,7 @@ const formData = ref({
 const form = ref({
   name: '',
   beginning: '',
+  start: '',
   deadline: '',
   end: '',
 });

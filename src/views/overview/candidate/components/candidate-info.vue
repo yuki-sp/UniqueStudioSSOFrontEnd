@@ -169,7 +169,7 @@ import { debounce } from 'lodash';
 import { Group, Step, recruitSteps } from '@/constants/team';
 import useRecruitmentStore from '@/store/modules/recruitment';
 import TeamGroupRadio from '@/views/components/team-group-radio.vue';
-import { FileItem, Message, Tooltip } from '@arco-design/web-vue';
+import { FileItem, Message } from '@arco-design/web-vue';
 import { useI18n } from 'vue-i18n';
 import useWindowResize from '@/hooks/resize';
 import candidateInfoCard from './candidate-info-card.vue';
@@ -394,8 +394,8 @@ const handleSetStressTime = async (): Promise<boolean> => {
 };
 
 // 预览链接
-const preUrl =
-  'blob:http://localhost:5111/33cb0d31-e85c-4d11-90df-70328f58f268';
+// const preUrl =
+//   'blob:http://localhost:5111/33cb0d31-e85c-4d11-90df-70328f58f268';
 </script>
 
 <style scoped lang="less">

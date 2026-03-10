@@ -249,15 +249,6 @@ const preview = computed(() => {
   };
 });
 
-const notifyFormRef = ref<any>(null);
-
-watch(
-  () => formData.value.next,
-  () => {
-    notifyFormRef.value?.clearValidate();
-  },
-);
-
 const generateSMSContent = (candidate: any) => {
   let example_time = `{${t('common.status.waitForDistribution')}}`;
   if (
@@ -308,6 +299,15 @@ const generateSMSContent = (candidate: any) => {
   });
 };
 
+const notifyFormRef = ref<any>(null);
+
+watch(
+  () => formData.value.next,
+  () => {
+    notifyFormRef.value?.clearValidate();
+  },
+);
+
 watch(isCustom, (val) => {
   if (val) {
     props.candidates.forEach((candidate) => {
@@ -336,27 +336,23 @@ const handleNotify = async () => {
     }
   }
 
-  try {
-    const resp = await Promise.all(
-      props.candidates.map((candidate) => {
-        const content = isCustom.value
-          ? customContents.value[candidate.aid]
-          : generateSMSContent(candidate);
-        return sendSms({
-          aid: candidate.aid,
-          content,
-        });
-      }),
-    );
-    if (!resp.every((x) => x)) return false;
-    Message.success(t('common.result.sendSuccess'));
-    notifyFormRef.value?.resetFields();
-    [formData.value.next] = nextValidSteps.value;
-    isCustom.value = false;
-    return true;
-  } catch {
-    return false;
-  }
+  const reqs = props.candidates.map((candidate) => {
+    const content = isCustom.value
+      ? customContents.value[candidate.aid]
+      : generateSMSContent(candidate);
+    return sendSms({
+      aid: candidate.aid,
+      content,
+    });
+  });
+
+  const resp = await Promise.all(reqs);
+  if (!resp.every((x) => x)) return false;
+  Message.success(t('common.result.sendSuccess'));
+  notifyFormRef.value?.resetFields();
+  [formData.value.next] = nextValidSteps.value;
+  isCustom.value = false;
+  return true;
 };
 </script>
 
