@@ -11,6 +11,7 @@ export interface Interview {
   end: TimeString;
   name: Group;
   slot_number: number;
+  select_number: number;
   recruitment_id: string;
 }
 

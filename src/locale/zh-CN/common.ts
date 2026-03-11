@@ -117,6 +117,7 @@ export default {
   'common.person': '人',
   'common.date': '日期',
   'common.time': '时间',
+  'common.timeAndSlotNumber': '时间和最大人数',
 
   'common.period.morning': '上午',
   'common.period.afternoon': '下午',
@@ -162,10 +163,10 @@ export default {
   'common.createRec.signupEndTimeBeforeRecEndTime':
     '报名结束时间必须早于招新结束时间',
 
-  'common.interview.duration':
-    '面试时长 (分钟)',
-  'common.interview.rest':
-    '休息时长 (分钟)',
-  'common.interview.error.incompleteInfo':
-    '日期或时间未填写完整',
+  'common.interview.duration': '面试时长 (分钟)',
+  'common.interview.rest': '休息时长 (分钟)',
+  'common.interview.unlimited': '不限',
+  'common.interview.slotNumber': '最大人数',
+  'common.interview.selectedNumber': '已选人数',
+  'common.interview.error.incompleteInfo': '日期或时间未填写完整',
 };
