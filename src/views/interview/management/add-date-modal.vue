@@ -42,7 +42,7 @@
       </div>
 
       <div class="flex gap-4">
-        <div class="w-5/12">
+        <div class="w-3/12">
           <div class="font-semibold mb-2">
             {{ $t('common.date') }}<span class="text-blue-600">*</span>
           </div>
@@ -51,7 +51,8 @@
 
         <div class="flex-1">
           <div class="font-semibold mb-2">
-            {{ $t('common.time') }}<span class="text-blue-600">*</span>
+            {{ $t('common.timeAndSlotNumber')
+            }}<span class="text-blue-600">*</span>
           </div>
           <div
             v-for="(_, index) in interviewTimes"
@@ -64,10 +65,15 @@
               format="HH:mm"
               class="flex-1"
             />
+            <a-input-number
+              v-model="slotNumbers[index]"
+              :min="1"
+              :placeholder="$t('common.interview.slotNumber')"
+              class="w-12 mx-2"
+            />
             <a-button
               type="text"
               status="danger"
-              class="px-1"
               @click="removeTimeRange(index)"
             >
               <template #icon><icon-delete /></template>
@@ -75,7 +81,6 @@
             <a-button
               v-if="index === interviewTimes.length - 1"
               type="text"
-              class="px-1"
               @click="addTimeRange"
             >
               <template #icon><icon-plus /></template>
@@ -115,6 +120,7 @@ const props = defineProps({
 const currentGroup = ref<Group>(props.currentGroupStart);
 const interviewDate = ref<string>('');
 const interviewTimes = ref<string[][]>([[]]);
+const slotNumbers = ref<number[]>([1]);
 const duration = ref(30);
 const rest = ref(10);
 const recStore = useRecruitmentStore();
@@ -138,13 +144,17 @@ const addTimeRange = () => {
   } else {
     interviewTimes.value.push([]);
   }
+  const lastSlotNumber = slotNumbers.value[slotNumbers.value.length - 1] || 1;
+  slotNumbers.value.push(lastSlotNumber);
 };
 
 const removeTimeRange = (index: number) => {
   if (interviewTimes.value.length > 1) {
     interviewTimes.value.splice(index, 1);
+    slotNumbers.value.splice(index, 1);
   } else {
     interviewTimes.value = [[]];
+    slotNumbers.value = [1];
   }
 };
 
@@ -174,7 +184,7 @@ const handleCreate = async () => {
     return;
   }
 
-  const interviews = interviewTimes.value.map(([startTime, endTime]) => {
+  const interviews = interviewTimes.value.map(([startTime, endTime], index) => {
     const startDate = new Date(`${interviewDate.value}T${startTime}`);
     const start = startDate.toISOString();
     const end = new Date(`${interviewDate.value}T${endTime}`).toISOString();
@@ -183,6 +193,7 @@ const handleCreate = async () => {
       period: calcPeriod(startDate),
       start,
       end,
+      slot_number: slotNumbers.value[index],
     };
   });
 

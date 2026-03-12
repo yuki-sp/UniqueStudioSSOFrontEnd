@@ -51,7 +51,11 @@ export default function request<T = object>(config: AxiosRequestConfig) {
     (err: AxiosError<{ msg: string }>) => {
       const { msg = '' } = err.response!.data!;
       if (msg.includes('authentication failed')) {
-        // 非登录态跳转SSO登录
+        // 非登录态跳转SSO登录（开发环境禁用跳转）
+        if (import.meta.env.DEV) {
+          Message.error(msg || i18n.global.t('request.unknowErr'));
+          return;
+        }
         window.location.href = `//${SSO_DOMAIN}/login?from=${HR_DOMAIN_FE}`;
         return;
       }

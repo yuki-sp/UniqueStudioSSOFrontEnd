@@ -12,6 +12,7 @@ export default {
   'common.operation.submitComment': '发表评论',
   'common.operation.switchStage': '转移阶段',
   'common.operation.terminate': '终止投递',
+  'common.operation.revive': '复活投递',
   'common.operation.dateManagement': '日程管理',
   'common.operation.addDate': '添加日程',
   'common.operation.deleteDate': '删除日程',
@@ -29,6 +30,7 @@ export default {
   'common.operation.allocate': '分配',
   'common.operation.allocateInterviewTime': '分配面试时间',
   'common.operation.confirmTerminate': '确认终止投递？',
+  'common.operation.confirmRevive': '确认复活投递？',
   'common.operation.confirmDeleteComment': '确认删除该评论？',
   'common.operation.editContent': '编辑内容',
   'common.operation.currentTestFileOrUrl': '当前笔试文件/链接',
@@ -36,7 +38,7 @@ export default {
   'common.operation.operate': '操作',
   'common.operation.refresh': '刷新',
   'common.operation.allocateTime': '分配时间',
-  'common.operation.candidateSeletedTime': '选手已选',
+  'common.operation.candidateSeletedTime': '选手候选时间',
   'common.operation.createRecruitment': '发起招新',
   'common.operation.updateRecruitment': '更新招新',
   'common.operation.noRecruitments': '没有招新记录',
@@ -51,6 +53,8 @@ export default {
   'common.result.sendSuccess': '发送成功',
   'common.result.switchStageSuccess': '转移阶段成功',
   'common.result.terminateSuccess': '终止投递成功',
+  'common.result.reviveSuccess': '复活投递成功',
+  'common.result.reviveTodo': '复活投递功能待实现',
   'common.result.commentNotNull': '评论与评价不能同时为空',
   'common.result.uploadFileSuccess': '上传文件/链接成功',
   'common.result.setStressTestTimeSuccess': '设置熬测时间成功',
@@ -113,6 +117,7 @@ export default {
   'common.person': '人',
   'common.date': '日期',
   'common.time': '时间',
+  'common.timeAndSlotNumber': '时间和最大人数',
 
   'common.period.morning': '上午',
   'common.period.afternoon': '下午',
@@ -158,10 +163,10 @@ export default {
   'common.createRec.signupEndTimeBeforeRecEndTime':
     '报名结束时间必须早于招新结束时间',
 
-  'common.interview.duration':
-    '面试时长 (分钟)',
-  'common.interview.rest':
-    '休息时长 (分钟)',
-  'common.interview.error.incompleteInfo':
-    '日期或时间未填写完整',
+  'common.interview.duration': '面试时长 (分钟)',
+  'common.interview.rest': '休息时长 (分钟)',
+  'common.interview.unlimited': '不限',
+  'common.interview.slotNumber': '最大人数',
+  'common.interview.selectedNumber': '已选人数',
+  'common.interview.error.incompleteInfo': '日期或时间未填写完整',
 };

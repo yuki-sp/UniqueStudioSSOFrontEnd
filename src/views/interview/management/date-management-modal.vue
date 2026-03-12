@@ -58,6 +58,30 @@
             }}</span>
           </div>
           <!-- 时间 -->
+          <div class="overflow-hidden flex items-center">
+            <icon-user
+              class="w-10 h-10 text-xl p-2 float-left mr-2.5 text-gray-500"
+            />
+            <span class="float-left leading-10 text-slate-500">
+              {{
+                $t('common.interview.slotNumber') +
+                ': ' +
+                (info.slot_number ?? $t('common.interview.unlimited'))
+              }}位
+            </span>
+          </div>
+          <div class="overflow-hidden flex items-center">
+            <icon-user
+              class="w-10 h-10 text-xl p-2 float-left mr-2.5 text-gray-500"
+            />
+            <span class="float-left leading-10 text-slate-500">
+              {{
+                $t('common.interview.selectedNumber') +
+                ': ' +
+                (info.select_number ?? 0)
+              }}位
+            </span>
+          </div>
           <a-button
             type="dashed"
             class="mt-1"

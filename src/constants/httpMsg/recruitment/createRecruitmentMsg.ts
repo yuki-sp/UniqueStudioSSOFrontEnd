@@ -5,6 +5,7 @@ import { Recruitment } from './getRecruitmentMsg';
 export interface CreateRecruitmentRequest {
   name: string;
   beginning: TimeString;
+  start: TimeString;
   deadline: TimeString;
   end: TimeString;
 }
