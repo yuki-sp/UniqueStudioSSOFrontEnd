@@ -142,9 +142,15 @@ export const SMSTemplate: {
   },
   {
     i18nKey: 'sms.base',
-    match: [Step.WrittenTest, Step.StressTest],
+    match: [Step.StressTest],
     restI18nKey: 'sms.rest.test',
     required: ['time', 'place', 'next'],
+  },
+  {
+    i18nKey: 'sms.base',
+    match: [Step.WrittenTest],
+    restI18nKey: 'sms.rest.writtenTest',
+    required: ['time', 'next'],
   },
   {
     i18nKey: 'sms.base',
