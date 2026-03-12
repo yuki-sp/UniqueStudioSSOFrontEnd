@@ -12,7 +12,6 @@ import {
   deleteInterview,
   createInterview,
 } from '@/api';
-import { set } from 'lodash';
 import { getWrittenTestType, setWrittenTestType } from '@/api/recruitment';
 import {
   RecruitmentState,
