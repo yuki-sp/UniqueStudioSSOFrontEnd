@@ -6,7 +6,7 @@ export type CreateInterviewRequest = {
   period: Period;
   start: TimeString;
   end: TimeString;
-  slotNumber: number;
+  slot_number: number;
 }[];
 
 export type CreateInterviewResponse = HttpRes<object>;

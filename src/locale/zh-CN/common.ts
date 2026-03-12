@@ -38,7 +38,7 @@ export default {
   'common.operation.operate': '操作',
   'common.operation.refresh': '刷新',
   'common.operation.allocateTime': '分配时间',
-  'common.operation.candidateSeletedTime': '选手已选',
+  'common.operation.candidateSeletedTime': '选手候选时间',
   'common.operation.createRecruitment': '发起招新',
   'common.operation.updateRecruitment': '更新招新',
   'common.operation.noRecruitments': '没有招新记录',
