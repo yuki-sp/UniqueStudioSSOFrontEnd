@@ -154,6 +154,7 @@
 import { ref, PropType, watch, computed } from 'vue';
 import { Group, recruitSteps, Step, SMSTemplate } from '@/constants/team';
 import { sendSms } from '@/api';
+import { groupBy } from 'lodash';
 import { Message } from '@arco-design/web-vue';
 import { useI18n } from 'vue-i18n';
 import dayjs from 'dayjs';
@@ -334,20 +335,30 @@ const handleNotify = async () => {
       Message.error(t('candidate.requireAllocateTime'));
       return false;
     }
+
+    const res = groupBy(props.candidates, ({ step }) => step);
+    const reqs = Object.entries(res).map(([current, arr]) => {
+      const aids = arr.map(({ aid }) => aid);
+      return sendSms({
+        type: props.type,
+        current: current as Step,
+        ...formData.value,
+        aids,
+      });
+    });
+    const resp = await Promise.all(reqs);
+    if (!resp.every((x) => x)) return false;
+  } else {
+    const reqs = props.candidates.map((candidate) => {
+      return sendSms({
+        aid: candidate.aid,
+        content: customContents.value[candidate.aid],
+      });
+    });
+    const resp = await Promise.all(reqs);
+    if (!resp.every((x) => x)) return false;
   }
 
-  const reqs = props.candidates.map((candidate) => {
-    const content = isCustom.value
-      ? customContents.value[candidate.aid]
-      : generateSMSContent(candidate);
-    return sendSms({
-      aid: candidate.aid,
-      content,
-    });
-  });
-
-  const resp = await Promise.all(reqs);
-  if (!resp.every((x) => x)) return false;
   Message.success(t('common.result.sendSuccess'));
   notifyFormRef.value?.resetFields();
   [formData.value.next] = nextValidSteps.value;

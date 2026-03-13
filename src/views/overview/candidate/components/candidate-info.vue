@@ -392,10 +392,6 @@ const handleSetStressTime = async (): Promise<boolean> => {
   Message.success(t('common.result.setStressTestTimeSuccess'));
   return true;
 };
-
-// 预览链接
-// const preUrl =
-//   'blob:http://localhost:5111/33cb0d31-e85c-4d11-90df-70328f58f268';
 </script>
 
 <style scoped lang="less">

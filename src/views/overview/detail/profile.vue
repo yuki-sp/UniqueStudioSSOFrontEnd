@@ -23,7 +23,7 @@
           }}</span>
         </div>
         <div class="sm:hidden flex items-center">
-          <icon-qq />
+          <icon-qq class="arco-icon" />
           <span class="ml-2.5 w-52 overflow-x-auto">{{
             user?.qq_account ?? ''
           }}</span>
@@ -68,7 +68,7 @@
         <div
           class="w-9 h-9 rounded-full flex justify-center items-center bg-[rgb(var(--gray-2))] shrink-0"
         >
-          <icon-qq :size="20" width="20" height="20" />
+          <icon-qq class="arco-icon" size="20" />
         </div>
         <div>
           <div class="text-[--color-text-3]">
